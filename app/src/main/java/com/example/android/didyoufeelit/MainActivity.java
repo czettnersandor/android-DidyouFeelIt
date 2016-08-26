@@ -55,10 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
     private class DownloadAsyncTask extends AsyncTask<String, Void, Event> {
         @Override
-        protected Event doInBackground(String... url) {
+        protected Event doInBackground(String... urls) {
+            // Don't perform the request if there are no URLs, or the first URL is null.
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
             // Perform the HTTP request for earthquake data and process the response.
-            Event earthquake = Utils.fetchEarthquakeData(url[0]);
-            // Update the information displayed to the user.
+            Event earthquake = Utils.fetchEarthquakeData(urls[0]);
+
             return earthquake;
         }
 
@@ -68,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected void onPostExecute(Event event) {
+            // If there is no result, do nothing.
+            if (event == null) {
+                return;
+            }
+
             updateUi(event);
         }
     }
